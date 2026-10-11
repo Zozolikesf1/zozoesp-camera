@@ -1,0 +1,41 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ZozoESP Camera</title>
+</head>
+<body>
+  <h1>ZozoESP Camera</h1>
+  <button id="start">Start camera</button>
+  <button id="stop">Stop camera</button>
+  <p id="status">Camera not started</p>
+  <video id="video" autoplay playsinline muted
+         style="width:100%;max-width:480px"></video>
+
+  <script>
+    const video = document.getElementById('video');
+    const status = document.getElementById('status');
+    let stream;
+
+    document.getElementById('start').onclick = async () => {
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'environment' },
+          audio: false
+        });
+        video.srcObject = stream;
+        status.textContent = 'Camera working!';
+      } catch (e) {
+        status.textContent = e.name + ': ' + e.message;
+      }
+    };
+
+    document.getElementById('stop').onclick = () => {
+      if (stream) stream.getTracks().forEach(t => t.stop());
+      video.srcObject = null;
+      status.textContent = 'Camera stopped';
+    };
+  </script>
+</body>
+</html>
